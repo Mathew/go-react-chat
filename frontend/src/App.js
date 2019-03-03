@@ -1,28 +1,42 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import {connect, sendMsg} from "./api";
+import Header from "./components/header";
+import Chat from "./components/chat";
+import MessageInput from "./components/messageInput";
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = {chat: []}
+    }
+
+    componentDidMount() {
+        connect((msg) => {
+            console.log("New MessageInput");
+            this.setState(prevState => ({
+                chat: [...this.state.chat, msg]
+            }));
+            console.log(this.state);
+        });
+    }
+
+    send(event) {
+        if (event.keyCode === 13) {
+            sendMsg(event.target.value);
+            event.target.value = "";
+        }
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <Header/>
+                <Chat chat={this.state.chat}/>
+                <MessageInput send={this.send}/>
+            </div>
+        );
+    }
 }
 
 export default App;

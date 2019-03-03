@@ -1,0 +1,8 @@
+FROM golang:1.12-alpine3.9
+RUN apk add --update git
+RUN mkdir /app
+ADD . /app/
+WORKDIR /app
+RUN go mod download
+RUN go build -o main
+CMD ["/app/main"]
